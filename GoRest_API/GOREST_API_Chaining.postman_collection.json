@@ -1,0 +1,460 @@
+{
+	"info": {
+		"_postman_id": "c8b03210-ee7c-4045-9c05-4c49d969283e",
+		"name": "GOREST_API_Chaining",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27812130"
+	},
+	"item": [
+		{
+			"name": "USERS_folder",
+			"item": [
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.log(\"pre-request script of randomly generate emailid & name\");\r",
+									"var random = Math.random().toString(36).substring(2);\r",
+									"var useremail = \"sup\"+random+\"@gmail.com\";\r",
+									"var username = \"sup\"+random;\r",
+									"pm.collectionVariables.set(\"email_collect\",useremail);\r",
+									"pm.collectionVariables.set(\"name_collect\",username);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"user is created\", function(){\r",
+									"    \r",
+									"});\r",
+									"pm.test(\"Status code is 201\", function(){\r",
+									"    pm.response.to.have.status(201) ;  \r",
+									"});\r",
+									" \r",
+									" var jsonData = JSON.parse(responseBody);\r",
+									" console.log(jsonData);\r",
+									" pm.collectionVariables.set(\"userid_collect\", jsonData.id);\r",
+									"  pm.collectionVariables.set(\"gender_collect\", jsonData.gender);\r",
+									"   pm.collectionVariables.set(\"status_collect\", jsonData.status);\r",
+									" console.log(pm.collectionVariables.get(\"userid_collect\"));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"name\": \"{{name_collect}}\",\r\n    \"email\": \"{{email_collect}}\",\r\n    \"gender\": \"female\",\r\n    \"status\": \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlgorest_qa_env}}/public/v2/users",
+							"host": [
+								"{{urlgorest_qa_env}}"
+							],
+							"path": [
+								"public",
+								"v2",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrive User Information",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200) ;  \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Successful GET request \", ()=> {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]) ; \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type Header is present\", ()=> {\r",
+									"   pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type Header is application/json\", ()=> {\r",
+									"   pm.expect(pm.response.headers.get('Content-Type')).to.be.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"// pm.test(\"Cookies 'language' is present\", ()=> {\r",
+									"//    pm.expect(pm.cookies.has('language')).to.be.true;\r",
+									"// });\r",
+									"\r",
+									"// pm.test(\"Cookies language has value 1\", ()=> {\r",
+									"//    pm.expect(pm.cookies.get('language')).to.be.eql('en-gb');\r",
+									"// });\r",
+									"\r",
+									"pm.test(\"Response time is less than 300ms\", ()=> {\r",
+									"   pm.expect(pm.response.responseTime).to.be.below(300);\r",
+									"});\r",
+									"\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify data type of the response\", function () { \r",
+									"    pm.expect(jsonData).to.be.an(\"object\"); \r",
+									"    pm.expect(jsonData.id).to.be.a(\"number\"); \r",
+									"    pm.expect(jsonData.name).to.be.a(\"string\"); \r",
+									"    pm.expect(jsonData.gender).to.be.a(\"string\"); \r",
+									"    pm.expect(jsonData.email).to.be.a(\"string\"); \r",
+									"    pm.expect(jsonData.status).to.be.a(\"string\"); \r",
+									"});\r",
+									"\r",
+									"pm.test(\"value of field is response\",() =>{\r",
+									"        pm.expect(jsonData.id).to.eql(pm.variables.get(\"userid_collect\"));\r",
+									"        pm.expect(jsonData.name).to.eql(pm.collectionVariables.get(\"name_collect\"));\r",
+									"        pm.expect(jsonData.gender).to.eql(pm.collectionVariables.get(\"gender_collect\"));\r",
+									"        pm.expect(jsonData.email).to.eql(pm.collectionVariables.get(\"email_collect\"));\r",
+									"        pm.expect(jsonData.status).to.eql(pm.collectionVariables.get(\"status_collect\"));\r",
+									"    \r",
+									"});\r",
+									"\r",
+									"///////////////// SCHEMA FOR specific ID ////////////////////////////\r",
+									"  var schema12  = { \r",
+									"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"email\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"gender\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"name\",\r",
+									"    \"email\",\r",
+									"    \"gender\",\r",
+									"    \"status\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									" pm.test(\"schema is valid for id\"+\"  \" + pm.variables.get(\"userid_collect\"),function(){\r",
+									"      pm.expect(tv4.validate(jsonData,schema12)).to.be.true;\r",
+									"  });\r",
+									"console.log(pm.collectionVariables.get(\"userid_collect\"));\r",
+									"\r",
+									"////////Comparision of USER DETAILS with the previous request executed/////////\r",
+									"pm.test(\"Values of json fields \",()=>{\r",
+									"var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData.id).to.eql(pm.variables.get(\"userid_collect\"));\r",
+									"        pm.expect(jsonData.name).to.eql(pm.collectionVariables.get(\"name_collect\"));\r",
+									"        pm.expect(jsonData.gender).to.eql(pm.collectionVariables.get(\"gender_collect\"));\r",
+									"        pm.expect(jsonData.email).to.eql(pm.collectionVariables.get(\"email_collect\"));\r",
+									"        pm.expect(jsonData.status).to.eql(pm.collectionVariables.get(\"status_collect\"));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.log(\"pre-request script at request level\");\r",
+									"pm.environment.set(\"urlgorest_qa_env\", \"https://gorest.co.in/\");\r",
+									"  \r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlgorest_qa_env}}/public/v2/users/{{userid_collect}}",
+							"host": [
+								"{{urlgorest_qa_env}}"
+							],
+							"path": [
+								"public",
+								"v2",
+								"users",
+								"{{userid_collect}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"user is partially updated\", function(){\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\r\n    \"name\": \"{{name_collect}}\",\r\n    \"gender\": \"male\",\r\n    \"status\": \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlgorest_qa_env}}/public/v2/users/{{userid_collect}}",
+							"host": [
+								"{{urlgorest_qa_env}}"
+							],
+							"path": [
+								"public",
+								"v2",
+								"users",
+								"{{userid_collect}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"user is updated\", function(){\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\r\n    \"name\": \"{{name_collect}}\",\r\n    \"email\": \"{{email_collect}}\",\r\n    \"gender\": \"female\",\r\n    \"status\": \"inactive\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlgorest_qa_env}}/public/v2/users/{{userid_collect}}",
+							"host": [
+								"{{urlgorest_qa_env}}"
+							],
+							"path": [
+								"public",
+								"v2",
+								"users",
+								"{{userid_collect}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.log(\"pre-request script of delete user\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"user is removed\", function(){\r",
+									"    \r",
+									"});\r",
+									" \r",
+									"///////////deletion of variables/////////////////\r",
+									"\r",
+									"  pm.collectionVariables.unset(\"userid_collect\");\r",
+									"  pm.collectionVariables.unset(\"name_collect\");\r",
+									"  pm.collectionVariables.unset(\"email_collect\");\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n\r\n        \"email\": \"michael.lawson@reqres.in\",\r\n        \"first_name\": \"Michael\",\r\n        \"last_name\": \"larson\",\r\n        \"avatar\": \"https://reqres.in/img/faces/michael7-image.jpg\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urlgorest_qa_env}}/public/v2/users/{{userid_collect}}",
+							"host": [
+								"{{urlgorest_qa_env}}"
+							],
+							"path": [
+								"public",
+								"v2",
+								"users",
+								"{{userid_collect}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "b03b80b4acbb879379964db7f00109db5cb632966d6554c028a8fe4814891215",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"console.log(\"pre-request script at folder level\");"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"console.log(\"test script at folder level\");"
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"console.log(\"pre-request script at collection level\");"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"console.log(\"test script at collection level\");"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url_collect",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "gender_collect",
+			"value": ""
+		},
+		{
+			"key": "status_collect",
+			"value": ""
+		}
+	]
+}
