@@ -11,6 +11,22 @@
 			"item": [
 				{
 					"name": "Get Booking Ids",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Hotel Booking IDs\", function(){\r",
+									"    \r",
+									"});\r",
+									"pm.test(\"Successful GET request : Status code is 200 OK\", function(){\r",
+									"    pm.response.to.have.status(200) ;  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -97,7 +113,69 @@
 									"//Validate Body Matches String\r",
 									"//  pm.test(\"SVerify Body Matches string\", function(){\r",
 									"//     pm.expect(pm.response.text()).to.be.include(\"\")\r",
-									"// });"
+									"// });\r",
+									"//Validation JSO Schema\r",
+									"const expectedSchema = \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"bookingid\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"booking\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"firstname\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"lastname\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"totalprice\": {\r",
+									"          \"type\": \"number\"\r",
+									"        },\r",
+									"        \"depositpaid\": {\r",
+									"          \"type\": \"boolean\"\r",
+									"        },\r",
+									"        \"bookingdates\": {\r",
+									"          \"type\": \"object\",\r",
+									"          \"properties\": {\r",
+									"            \"checkin\": {\r",
+									"              \"type\": \"string\"\r",
+									"            },\r",
+									"            \"checkout\": {\r",
+									"              \"type\": \"string\"\r",
+									"            }\r",
+									"          },\r",
+									"          \"required\": [\r",
+									"            \"checkin\",\r",
+									"            \"checkout\"\r",
+									"          ]\r",
+									"        },\r",
+									"        \"additionalneeds\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"firstname\",\r",
+									"        \"lastname\",\r",
+									"        \"totalprice\",\r",
+									"        \"depositpaid\",\r",
+									"        \"bookingdates\",\r",
+									"        \"additionalneeds\"\r",
+									"      ]\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"bookingid\",\r",
+									"    \"booking\"\r",
+									"  ]\r",
+									"};\r",
+									" pm.test(\"Verify JSON Schema is Successful\", function(){\r",
+									"    pm.response.to.have.jsonSchema(expectedSchema);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -132,6 +210,85 @@
 				},
 				{
 					"name": "Get Booking Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Hotel Booking Details\", function(){\r",
+									"    \r",
+									"});\r",
+									"pm.test(\"Successful GET request : Status code is 200 OK\", function(){\r",
+									"    pm.response.to.have.status(200) ;  \r",
+									"});\r",
+									"//Validation JSO Schema\r",
+									"const expectedSchema = \r",
+									"{\r",
+									"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"  \"title\": \"Generated schema for Root\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"firstname\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"lastname\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"totalprice\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"depositpaid\": {\r",
+									"      \"type\": \"boolean\"\r",
+									"    },\r",
+									"    \"bookingdates\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"checkin\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"checkout\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"checkin\",\r",
+									"        \"checkout\"\r",
+									"      ]\r",
+									"    },\r",
+									"    \"additionalneeds\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"firstname\",\r",
+									"    \"lastname\",\r",
+									"    \"totalprice\",\r",
+									"    \"depositpaid\",\r",
+									"    \"bookingdates\",\r",
+									"    \"additionalneeds\"\r",
+									"  ]\r",
+									"};\r",
+									" pm.test(\"Verify JSON Schema is Successful\", function(){\r",
+									"    pm.response.to.have.jsonSchema(expectedSchema);\r",
+									"});\r",
+									" var jsonData = JSON.parse(responseBody);\r",
+									"pm.test(\"Verify Content-Type is Present\", function(){\r",
+									"    pm.response.to.have.header(\"Content-Type\",\"application/json; charset=utf-8\")\r",
+									"});\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1200);\r",
+									"});\r",
+									"//Nested JSON Object Key Value \r",
+									" pm.test(\"Verify Checkout Date\", function(){\r",
+									"    pm.expect(jsonData.bookingdates.checkout).to.eql(\"2019-01-01\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -181,7 +338,7 @@
 									"\r",
 									"pm.test(\"Token is Succesfully Access\", function(){    \r",
 									"});\r",
-									"pm.test(\"Status code is 200 OK\", function(){\r",
+									"pm.test(\"Successful POST request :Status code is 200 OK\", function(){\r",
 									"    pm.response.to.have.status(200) ;  \r",
 									"});\r",
 									"\r",
@@ -234,7 +391,7 @@
 									"pm.test(\"Hotel Booking Details are Updated Succesfully\", function(){\r",
 									"    \r",
 									"});\r",
-									"pm.test(\"Status code is 200 OK\", function(){\r",
+									"pm.test(\"Successful PUT request :Status code is 200 OK\", function(){\r",
 									"    pm.response.to.have.status(200) ;  \r",
 									"});\r",
 									" "
@@ -290,7 +447,7 @@
 									"pm.test(\"Updates a current booking with a partial payload\", function(){\r",
 									"    \r",
 									"});\r",
-									"pm.test(\"Status code is 200 OK\", function(){\r",
+									"pm.test(\"Successful PATCH request :Status code is 200 OK\", function(){\r",
 									"    pm.response.to.have.status(200) ;  \r",
 									"});\r",
 									" "
@@ -350,7 +507,7 @@
 									"pm.test(\"Hotel Booking is Deleted Succesfully\", function(){\r",
 									"    \r",
 									"});\r",
-									"pm.test(\"Status code is 201 OK\", function(){\r",
+									"pm.test(\"Successful DELETE request :Status code is 201 OK\", function(){\r",
 									"    pm.response.to.have.status(201) ;  \r",
 									"});\r",
 									" "
@@ -382,6 +539,57 @@
 							"path": [
 								"booking",
 								"{{bookingid_collect}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "File upload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"File Uploaded Succesfully\", function(){\r",
+									"    \r",
+									"});\r",
+									"pm.test(\"Successful POST request :Status code is 200 OK\", function(){\r",
+									"    pm.response.to.have.status(200) ;  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "",
+									"type": "file",
+									"src": "/E:/Manual_Testing/Postman_API/books_api.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://postman-echo.com/post",
+							"protocol": "https",
+							"host": [
+								"postman-echo",
+								"com"
+							],
+							"path": [
+								"post"
 							]
 						}
 					},
